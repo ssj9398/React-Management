@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Customer from './components/Customer'
 import './App.css';
-import { Paper } from '@material-ui/core';
+import { Paper, TableRow } from '@material-ui/core';
 //import { isCompositeComponent } from 'react-dom/test-utils';
 import { Table } from '@material-ui/core';
 import { TableHead } from '@material-ui/core';
@@ -9,6 +9,7 @@ import { TableBody } from '@material-ui/core';
 //import { TableRow } from '@material-ui/core';
 import { TableCell } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { CircularProgress } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -19,18 +20,38 @@ const styles = theme => ({
   },
   table: {
     minWidth: 1080
+  },
+  progress: {
+    margin: theme.spacing(2)
   }
-})
+});
 
+/* React가 LifeCycle
+
+1) constructor()
+
+2) componentWillMount()
+
+3) render()
+
+4) componentDidMount()
+
+*/
+
+/*
+props or state가 변경이 되면 shouldComponentUpdate()가 사용됨
+*/
 
 
 class App extends Component {
 
   state = {
-    customers: ""
+    customers: "",
+    completed: 0
   }
 
   componentDidMount() {
+    this.timer = setInterval(this.progress, 20)
     this.callApi()
       .then(res => this.setState({ customers: res }))
       .catch(err => console.log(err));
@@ -40,6 +61,11 @@ class App extends Component {
     const response = await fetch('/api/customers');
     const body = await response.json();
     return body;
+  }
+
+  progress = () => {
+    const { completed } = this.state;
+    this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   }
 
   render() {
@@ -69,7 +95,12 @@ class App extends Component {
                     job={c.job}
                   />
                 );
-              }) : ""
+              }) :
+                <TableRow>
+                  <TableCell colSpan="6" align="center">
+                    <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
+                  </TableCell>
+                </TableRow>
             }
           </TableBody>
         </Table>
