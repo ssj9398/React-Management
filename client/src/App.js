@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import Customer from './components/Customer'
 import './App.css';
 import { Paper } from '@material-ui/core';
-import { isCompositeComponent } from 'react-dom/test-utils';
+//import { isCompositeComponent } from 'react-dom/test-utils';
 import { Table } from '@material-ui/core';
 import { TableHead } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
-import { TableRow } from '@material-ui/core';
+//import { TableRow } from '@material-ui/core';
 import { TableCell } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -22,36 +22,26 @@ const styles = theme => ({
   }
 })
 
-const customers = [{
-  'id': 1,
-  'image': 'https://placeimg.com/64/64/1',
-  'name': '홍길동1',
-  'birthday': '941000',
-  'gender': '남자',
-  'job': '대학생'
 
-},
-{
-  'id': 2,
-  'image': 'https://placeimg.com/64/64/2',
-  'name': '홍길동2',
-  'birthday': '940200',
-  'gender': '남자',
-  'job': '대학생'
-
-},
-{
-  'id': 3,
-  'image': 'https://placeimg.com/64/64/3',
-  'name': '홍길동3',
-  'birthday': '940300',
-  'gender': '남자',
-  'job': '대학생'
-
-}
-]
 
 class App extends Component {
+
+  state = {
+    customers: ""
+  }
+
+  componentDidMount() {
+    this.callApi()
+      .then(res => this.setState({ customers: res }))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -67,7 +57,7 @@ class App extends Component {
           </TableHead>
           <TableBody>
             {
-              customers.map(c => {
+              this.state.customers ? this.state.customers.map(c => {
                 return (
                   <Customer
                     key={c.id}
@@ -79,7 +69,7 @@ class App extends Component {
                     job={c.job}
                   />
                 );
-              })
+              }) : ""
             }
           </TableBody>
         </Table>
