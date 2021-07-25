@@ -84,7 +84,8 @@ const config = {
         }
 ```
 
-
+### 파일 처리를 위한 라이브러리
+`npm install --save multer`
 
 ----------------------------
 
