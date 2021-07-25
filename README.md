@@ -12,12 +12,13 @@
 3. yarn start 리액트 프로젝트 실행
 -안되면 `npm install -g yarn` 설치 후 하면 됨
 
+----------------------------
 ### React 문법
-- react 에서는 jsx문법을 따르기 때문에 class는 className을 써야함
+  - react 에서는 jsx문법을 따르기 때문에 class는 className을 써야함
 
-- map을 사용할때는 key속성을 넣어줘야함
+  - map을 사용할때는 key속성을 넣어줘야함
 각원소 구분을 위해
-
+----------------------------
 ### Material 웹디자인 프레임워크 사용
 - https://material-ui.com/components/tables/
 
@@ -29,18 +30,19 @@
 
 `yarn add @material-ui/core`
 
+----------------------------
 ### node.js express 서버 구축
 
-- 리액트, 노드 같이 실행 할 수 있게 package.json으로 명시해줌
+    - 리액트, 노드 같이 실행 할 수 있게 package.json으로 명시해줌
 
 
 `npm install -g nodemon` 설치
 
 `npm install nodemon body-parser express` 모듈 설치
 
-node server.js 서버 실행
+- node server.js 서버 실행
 
-
+----------------------------
 ### REST API구축
 1. `yarn dev` : 프로젝트(react,nodejs 같이) 실행
     - 에러시 windows posershell 에서 권한을 바꿔줘야함
@@ -50,7 +52,7 @@ node server.js 서버 실행
 2. Proxy
     - 2.0이후 버전 부터는 proxy설정을 다르게 해줘야 한다.
 https://create-react-app.dev/docs/proxying-api-requests-in-development/
-
+----------------------------
 ### React가 LifeCycle
 
 1) constructor()
@@ -63,7 +65,7 @@ https://create-react-app.dev/docs/proxying-api-requests-in-development/
 
 - props or state가 변경이 되면 shouldComponentUpdate()가 사용됨
 
-
+----------------------------
 ### mysql 설치
 `npm install --save mysql`
 
