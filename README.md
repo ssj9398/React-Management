@@ -8,7 +8,7 @@
 2. `npm install -g create-react-app` 글로벌 패키지 형태로 설치
     - create react app 패키지
     - create-react-app management  management라는 리액트앱 설치
-
+    - [공식문서](https://create-react-app.dev/docs/getting-started)
 3. yarn start 리액트 프로젝트 실행
 -안되면 `npm install -g yarn` 설치 후 하면 됨
 
