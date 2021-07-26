@@ -51,7 +51,7 @@
 
 2. Proxy
     - 2.0이후 버전 부터는 proxy설정을 다르게 해줘야 한다.
-https://create-react-app.dev/docs/proxying-api-requests-in-development/
+    - https://create-react-app.dev/docs/proxying-api-requests-in-development/
 ----------------------------
 ### React가 LifeCycle
 
