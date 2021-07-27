@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
-import Customer from './components/Customer'
+import Customer from './components/Customer';
 import CustomerAdd from './components/CustomerAdd';
 import './App.css';
-import { Paper, TableRow } from '@material-ui/core';
-//import { isCompositeComponent } from 'react-dom/test-utils';
-import { Table } from '@material-ui/core';
-import { TableHead } from '@material-ui/core';
-import { TableBody } from '@material-ui/core';
-//import { TableRow } from '@material-ui/core';
-import { TableCell } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import { alpha, makeStyles } from '@material-ui/core/styles';
+import { fade } from '@material-ui/core/styles/colorManipulator';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -25,7 +23,6 @@ const styles = theme => ({
   root: {
     width: '100%',
     minWidth: 1080
-
   },
   menu: {
     marginTop: 15,
@@ -33,12 +30,12 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center'
   },
-  progress: {
-    margin: theme.spacing(2)
-  },
   paper: {
     marginLeft: 18,
     marginRight: 18
+  },
+  progress: {
+    margin: theme.spacing.unit * 2
   },
   grow: {
     flexGrow: 1,
@@ -47,10 +44,10 @@ const styles = theme => ({
     fontSize: '1.0rem'
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginLeft: -12,
+    marginRight: 20,
   },
   title: {
-    flexGrow: 1,
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
@@ -59,19 +56,19 @@ const styles = theme => ({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
+      backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
+      marginLeft: theme.spacing.unit,
       width: 'auto',
     },
   },
   searchIcon: {
-    padding: theme.spacing(0, 2),
+    width: theme.spacing.unit * 9,
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -81,38 +78,23 @@ const styles = theme => ({
   },
   inputRoot: {
     color: 'inherit',
+    width: '100%',
   },
   inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    paddingTop: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 10,
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
+      width: 120,
       '&:focus': {
-        width: '20ch',
+        width: 200,
       },
     },
-  },
+  }
 });
-
-/* React가 LifeCycle
-
-1) constructor()
-
-2) componentWillMount()
-
-3) render()
-
-4) componentDidMount()
-
-*/
-
-/*
-props or state가 변경이 되면 shouldComponentUpdate()가 사용됨
-*/
-
 
 class App extends Component {
 
@@ -120,14 +102,16 @@ class App extends Component {
     super(props);
     this.state = {
       customers: '',
-      completed: 0
+      completed: 0,
+      searchKeyword: ''
     }
   }
 
   stateRefresh = () => {
     this.setState({
       customers: '',
-      completed: 0
+      completed: 0,
+      searchKeyword: ''
     });
     this.callApi()
       .then(res => this.setState({ customers: res }))
@@ -135,7 +119,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(this.progress, 20)
+    this.timer = setInterval(this.progress, 20);
     this.callApi()
       .then(res => this.setState({ customers: res }))
       .catch(err => console.log(err));
@@ -152,24 +136,34 @@ class App extends Component {
     this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   }
 
+  handleValueChange = (e) => {
+    let nextState = {};
+    nextState[e.target.name] = e.target.value;
+    this.setState(nextState);
+  }
+
   render() {
+    const filteredComponents = (data) => {
+      data = data.filter((c) => {
+        return c.name.indexOf(this.state.searchKeyword) > -1;
+      });
+      return data.map((c) => {
+        return <Customer stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.birthday} gender={c.gender} job={c.job} />
+      });
+    }
     const { classes } = this.props;
-    const cellList = ["번호", "프로필이미지", "이름", "생일", "성별", "직업", "설정"]
+    const cellList = ["번호", "프로필 이미지", "이름", "생년월일", "성별", "직업", "설정"];
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-            >
+            <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
               <MenuIcon />
             </IconButton>
-            <Typography className={classes.title} variant="h6" noWrap>
+            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
               고객 관리 시스템
             </Typography>
+            <div className={classes.grow} />
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -180,7 +174,9 @@ class App extends Component {
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
-                inputProps={{ 'aria-label': 'search' }}
+                name="searchKeyword"
+                value={this.state.searchKeyword}
+                onChange={this.handleValueChange}
               />
             </div>
           </Toolbar>
@@ -188,40 +184,30 @@ class App extends Component {
         <div className={classes.menu}>
           <CustomerAdd stateRefresh={this.stateRefresh} />
         </div>
-        <Paper classNme={classes.paper}>
+        <Paper className={classes.paper}>
           <Table className={classes.table}>
             <TableHead>
-              {cellList.map(c => {
-                return <TableCell className={classes.TableHead}>{c}</TableCell>
-              })}
+              <TableRow>
+                {cellList.map(c => {
+                  return <TableCell className={classes.tableHead}>{c}</TableCell>
+                })}
+              </TableRow>
             </TableHead>
             <TableBody>
-              {
-                this.state.customers ? this.state.customers.map(c => {
-                  return (
-                    <Customer stateRefresh={this.stateRefresh}
-                      key={c.id}
-                      id={c.id}
-                      image={c.image}
-                      name={c.name}
-                      birthday={c.birthday}
-                      gender={c.gender}
-                      job={c.job}
-                    />
-                  );
-                }) :
-                  <TableRow>
-                    <TableCell colSpan="6" align="center">
-                      <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
-                    </TableCell>
-                  </TableRow>
+              {this.state.customers ?
+                filteredComponents(this.state.customers) :
+                <TableRow>
+                  <TableCell colSpan="6" align="center">
+                    <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
+                  </TableCell>
+                </TableRow>
               }
             </TableBody>
           </Table>
         </Paper>
-
       </div>
     );
   }
 }
+
 export default withStyles(styles)(App);
