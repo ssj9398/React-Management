@@ -1,5 +1,6 @@
 ## Management System
 - React로 만드는 고객 관리 시스템
+- ![image](https://user-images.githubusercontent.com/48196352/127182122-67f63107-eb7b-4551-abf2-6867c685db7d.png)
 
 ### React 개발환경설치
 1. nodejs 설치
